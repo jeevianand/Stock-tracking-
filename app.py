@@ -10,11 +10,11 @@ app = Flask(__name__)
 
 def get_db():
     conn = mysql.connector.connect(
-        host=os.environ["MYSQLHOST"],          # shuttle.proxy.rlwy.net
-        user=os.environ["MYSQLUSER"],          # root
-        password=os.environ["MYSQLPASSWORD"],  # your password
-        database=os.environ["MYSQLDATABASE"],  # railway
-        port=int(os.environ["MYSQLPORT"])      # 28420
+        host=os.environ.get("MYSQLHOST", "localhost"),
+        user=os.environ.get("MYSQLUSER", "root"),
+        password=os.environ.get("MYSQLPASSWORD", "Jeevi24@"),
+        database=os.environ.get("MYSQLDATABASE", "trade_diary"),
+        port=os.environ.get("MYSQLPORT", "3306")
     )
     return conn
 
@@ -422,3 +422,4 @@ def api_feedback_all():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
