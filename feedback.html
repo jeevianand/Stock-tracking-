@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2-Day Performance Review</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: black;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .summary-card {
+            background:white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .card {
+            flex: 1;
+            background: rgb(42, 179, 117);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .card ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .card ul li {
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Your Performance Review</h1>
+
+<div id="summary-card" class="summary-card">Loading...</div>
+
+<div class="cards-container">
+
+    <div class="card" onclick="toggleCard('good')">
+        <h3>Good Habits</h3>
+        <ul id="good-list" class="hidden"></ul>
+    </div>
+
+    <div class="card" onclick="toggleCard('bad')">
+        <h3>Mistakes</h3>
+        <ul id="bad-list" class="hidden"></ul>
+    </div>
+
+    <div class="card" onclick="toggleCard('improve')">
+        <h3>Improvements Needed</h3>
+        <ul id="improve-list" class="hidden"></ul>
+    </div>
+
+</div>
+
+
+<script>
+    function toggleCard(type) {
+        const list = document.getElementById(type + "-list");
+
+        if (list.classList.contains("hidden")) {
+            list.classList.remove("hidden");
+        } else {
+            list.classList.add("hidden");
+        }
+    }
+
+    fetch("/api/feedback")
+        .then(r => r.json())
+        .then(data => {
+            let info = data.two_day.summary;
+
+            // Summary Box
+            document.getElementById("summary-card").innerHTML =
+                `Last 2 Days: ${info.total_trades} Trades | Win Rate: ${info.win_rate}% | Net P/L: ₹${info.net_pl}`;
+
+            // Good Habits
+            data.two_day.good.forEach(item => {
+                let li = document.createElement("li");
+                li.textContent = item;
+                document.getElementById("good-list").appendChild(li);
+            });
+
+            // Mistakes
+            data.two_day.bad.forEach(item => {
+                let li = document.createElement("li");
+                li.textContent = item;
+                document.getElementById("bad-list").appendChild(li);
+            });
+
+            // Improvements
+            data.two_day.improve.forEach(item => {
+                let li = document.createElement("li");
+                li.textContent = item;
+                document.getElementById("improve-list").appendChild(li);
+            });
+        })
+        .catch(err => {
+            document.getElementById("summary-card").innerHTML =
+                "Error: Unable to load feedback.";
+        });
+</script>
+
+</body>
+</html>

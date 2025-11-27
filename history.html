@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jei's Trade History</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header>
+    <h1>Jei's US Market Trade Diary</h1>
+    <nav>
+        <a href="/history">Trade History</a>
+        <a href="/dashboard" class="active">Dashboard</a>
+        <a href="/charts" class="active">Performance</a>
+        <a href="/feedback" class="active">Feedback</a>
+    </nav>
+</header>
+
+<main class="container">
+    <h2>Trade History</h2>
+
+    <div class="card">
+        <h3>Filters</h3>
+        <div class="filters">
+            <input type="text" id="filter_symbol" placeholder="Symbol (AAPL)">
+            <select id="filter_strategy">
+                <option value="">Strategy</option>
+                <option value="Swing">Swing</option>
+                <option value="Intraday">Intraday</option>
+                <option value="Scalping">Scalping</option>
+                <option value="Long-term">Long-term</option>
+                <option value="Options">Options</option>
+            </select>
+
+            <select id="filter_emotion">
+                <option value="">Emotion</option>
+                <option value="Calm">Calm</option>
+                <option value="Confident">Confident</option>
+                <option value="Fear">Fear</option>
+                <option value="Overthinking">Overthinking</option>
+                <option value="Greedy">Greedy</option>
+            </select>
+
+            <select id="filter_outcome">
+                <option value="all">All</option>
+                <option value="profit">Profit Only</option>
+                <option value="loss">Loss Only</option>
+            </select>
+
+            <label>From:</label>
+            <input type="date" id="filter_date_from">
+
+            <label>To:</label>
+            <input type="date" id="filter_date_to">
+
+            <button class="btn-secondary" id="applyFilters">Apply</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>Date/Time</th>
+                <th>Symbol</th>
+                <th>Buy</th>
+                <th>Sell</th>
+                <th>Qty</th>
+                <th>Profit / Loss</th>
+                <th>Emotion</th>
+                <th>Strategy</th>
+                <th>Reason</th>
+                <th>Notes</th>
+            </tr>
+            </thead>
+            <tbody id="tradesTableBody">
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script src="/static/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        loadTrades();
+
+        document.getElementById("applyFilters").addEventListener("click", function () {
+            loadTrades();
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jei's Trade Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header>
+    <h1>Jei's US Market Trade Diary</h1>
+    <nav>
+        <a href="/history">Trade History</a>
+        <a href="/dashboard" class="active">Dashboard</a>
+        <a href="/charts" class="active">Performance</a>
+        <a href="/feedback" class="active">Feedback</a>
+
+
+    </nav>
+</header>
+
+<main class="container">
+    <h2>Performance Dashboard</h2>
+
+    <div id="summaryCards" class="summary-grid card">
+        <div class="summary-item">
+            <h3>Total Trades</h3>
+            <p id="total_trades">0</p>
+        </div>
+        <div class="summary-item">
+            <h3>Total Profit</h3>
+            <p id="total_profit">0</p>
+        </div>
+        <div class="summary-item">
+            <h3>Win Rate</h3>
+            <p id="win_rate">0%</p>
+        </div>
+        <div class="summary-item">
+            <h3>Avg Win / Avg Loss</h3>
+            <p id="avg_wins_losses">0 / 0</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Profit by Symbol</h3>
+        <ul id="profit_by_symbol"></ul>
+    </div>
+
+    <div class="card">
+        <h3>Profit by Strategy</h3>
+        <ul id="profit_by_strategy"></ul>
+    </div>
+
+    <div class="card">
+        <h3>Profit by Emotion</h3>
+        <ul id="profit_by_emotion"></ul>
+    </div>
+</main>
+
+<script src="/static/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        loadDashboard();
+    });
+</script>
+</body>
+</html>

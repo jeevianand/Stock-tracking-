@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JEI Track Diary - Performance</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background:black;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .chart-card, .stats-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .chart-card canvas {
+            width: 100%;
+            height: 300px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .stat-box {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #555;
+        }
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JEI Track Diary - Performance Dashboard</h1>
+    
+
+    <div class="charts-container">
+        <div class="chart-card">
+            <h3>Equity Curve</h3>
+            <canvas id="equityChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Win vs Loss</h3>
+            <canvas id="winLossChart"></canvas>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <div class="chart-card">
+            <h3>Daily Profit / Loss</h3>
+            <canvas id="dailyPlChart"></canvas>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <div class="stats-card">
+            <h3>Quick Stats</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Avg Profit</div>
+                    <div class="stat-value" id="avgProfit"></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Avg Loss</div>
+                    <div class="stat-value" id="avgLoss"></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Best Trade</div>
+                    <div class="stat-value" id="bestTrade"></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Worst Trade</div>
+                    <div class="stat-value" id="worstTrade"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch data from backend
+        fetch('/api/performance-data')
+            .then(response => response.json())
+            .then(data => {
+                const dates = data.dates;
+                const dailyPL = data.daily_pl;
+                const equityCurve = data.equity_curve;
+                const wins = data.wins;
+                const losses = data.losses;
+                const stats = data.stats;
+
+                // Set stats text
+                document.getElementById('avgProfit').innerText = stats.avg_profit.toFixed(2);
+                document.getElementById('avgLoss').innerText = stats.avg_loss.toFixed(2);
+                document.getElementById('bestTrade').innerText = stats.best_trade.toFixed(2);
+                document.getElementById('worstTrade').innerText = stats.worst_trade.toFixed(2);
+
+                // Equity Curve Line Chart
+                const equityCtx = document.getElementById('equityChart').getContext('2d');
+                new Chart(equityCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Equity',
+                            data: equityCurve,
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Date' }
+                            },
+                            y: {
+                                title: { display: true, text: 'Cumulative P/L' }
+                            }
+                        }
+                    }
+                });
+
+                // Daily P/L Bar Chart
+                const dailyCtx = document.getElementById('dailyPlChart').getContext('2d');
+                new Chart(dailyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Daily P/L',
+                            data: dailyPL,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Date' }
+                            },
+                            y: {
+                                title: { display: true, text: 'P/L' }
+                            }
+                        }
+                    }
+                });
+
+                // Win vs Loss Pie Chart
+                const winLossCtx = document.getElementById('winLossChart').getContext('2d');
+                new Chart(winLossCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Wins', 'Losses'],
+                        datasets: [{
+                            data: [wins, losses]
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            })
+            .catch(err => console.error('Error loading performance data:', err));
+    </script>
+</body>
+</html>
